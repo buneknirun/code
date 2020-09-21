@@ -1,3 +1,4 @@
+import 'package:bunpwa/widget/register.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -12,19 +13,45 @@ class _AuthenState extends State<Authen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              buildContainer(),
-              buildText(),
-              buildContainerUser(),
-              buildContainerPassword(),
-              buildLogin()
-            ],
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: RadialGradient(
+            center: Alignment(0, -0.45),
+            radius: 1,
+            colors: [Colors.white, Colors.lime, Colors.brown],
           ),
         ),
+        child: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                buildContainer(),
+                buildText(),
+                buildContainerUser(),
+                buildContainerPassword(),
+                buildLogin(),
+                buildFlatButton(),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  FlatButton buildFlatButton() {
+    return FlatButton(
+      onPressed: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Register(),)
+            );
+      },
+      child: Text(
+        'New Register',
+        style: TextStyle(color: Colors.yellow.shade300),
       ),
     );
   }
@@ -34,8 +61,12 @@ class _AuthenState extends State<Authen> {
       margin: EdgeInsets.only(top: 16),
       width: 250,
       child: RaisedButton(
-        onPressed: null,
-        child: Text('Login'),
+        color: Colors.pink.shade200,
+        onPressed: () {},
+        child: Text(
+          'Login',
+          style: TextStyle(color: Colors.white),
+        ),
       ),
     );
   }
