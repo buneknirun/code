@@ -21,9 +21,21 @@ class _AuthenState extends State<Authen> {
               buildText(),
               buildContainerUser(),
               buildContainerPassword(),
+              buildLogin()
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Container buildLogin() {
+    return Container(
+      margin: EdgeInsets.only(top: 16),
+      width: 250,
+      child: RaisedButton(
+        onPressed: null,
+        child: Text('Login'),
       ),
     );
   }
@@ -50,8 +62,9 @@ class _AuthenState extends State<Authen> {
         decoration: InputDecoration(
           labelText: 'Password',
           border: OutlineInputBorder(),
-          suffixIcon:
-              IconButton(icon: Icon(Icons.remove_red_eye), onPressed: () {
+          suffixIcon: IconButton(
+              icon: Icon(Icons.remove_red_eye),
+              onPressed: () {
                 setState(() {
                   statusRedEye = !statusRedEye;
                 });
