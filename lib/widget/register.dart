@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
 class Register extends StatefulWidget {
@@ -29,9 +30,11 @@ class _RegisterState extends State<Register> {
 
   Future<Null> findLatLng() async {
     LocationData locationData = await findLocation();
-    lat = locationData.latitude;
+    setState(() {
+      lat = locationData.latitude;
     lng = locationData.longitude;
     print('lat = $lat, lng = $lng');
+    });
   }
 
   Future<LocationData> findLocation() async {
@@ -63,7 +66,7 @@ class _RegisterState extends State<Register> {
             buildSizedBox(),
             buildPassword(),
             buildSizedBox(),
-            buildMap(),
+            lat == null ? CircularProgressIndicator() : buildMap(),
             buildSizedBox(),
           ],
         ),
@@ -71,11 +74,22 @@ class _RegisterState extends State<Register> {
     );
   }
 
-  Container buildMap() => Container(
-        width: MediaQuery.of(context).size.width * 0.8,
-        height: MediaQuery.of(context).size.width * 0.8,
-        color: Colors.grey,
-      );
+  Container buildMap() {
+    CameraPosition cameraPosition = CameraPosition(
+      target: LatLng(lat, lng),
+      zoom: 16,
+    );
+
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.8,
+      height: MediaQuery.of(context).size.width * 0.8,
+      child: GoogleMap(
+        initialCameraPosition: cameraPosition,
+        mapType: MapType.normal,
+        onMapCreated: (controller) {},
+      ),
+    );
+  }
 
   SizedBox buildSizedBox() {
     return SizedBox(
