@@ -206,6 +206,7 @@ class _RegisterState extends State<Register> {
         maxWidth: 800,
         maxHeight: 800,
       );
+      print('Path Image = ${result.path}');
       setState(() {
         file = File(result.path);
       });
