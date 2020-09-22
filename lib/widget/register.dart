@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
 
 class Register extends StatefulWidget {
@@ -20,6 +23,7 @@ class _RegisterState extends State<Register> {
   ];
   String choosePosition;
   double lat, lng;
+  File file;
 
   @override
   void initState() {
@@ -32,8 +36,8 @@ class _RegisterState extends State<Register> {
     LocationData locationData = await findLocation();
     setState(() {
       lat = locationData.latitude;
-    lng = locationData.longitude;
-    print('lat = $lat, lng = $lng');
+      lng = locationData.longitude;
+      print('lat = $lat, lng = $lng');
     });
   }
 
@@ -74,6 +78,19 @@ class _RegisterState extends State<Register> {
     );
   }
 
+  Set<Marker> mySet() {
+    return <Marker>[
+      Marker(
+        markerId: MarkerId('myID'),
+        position: LatLng(lat, lng),
+        infoWindow: InfoWindow(
+          title: 'คุณอยู่ที่นี่',
+          snippet: 'lat = $lat, lng = $lng',
+        ),
+      ),
+    ].toSet();
+  }
+
   Container buildMap() {
     CameraPosition cameraPosition = CameraPosition(
       target: LatLng(lat, lng),
@@ -87,6 +104,7 @@ class _RegisterState extends State<Register> {
         initialCameraPosition: cameraPosition,
         mapType: MapType.normal,
         onMapCreated: (controller) {},
+        markers: mySet(),
       ),
     );
   }
@@ -181,19 +199,40 @@ class _RegisterState extends State<Register> {
     );
   }
 
+  Future<Null> chooseAvatar(ImageSource source) async {
+    try {
+      var result = await ImagePicker().getImage(
+        source: source,
+        maxWidth: 800,
+        maxHeight: 800,
+      );
+      setState(() {
+        file = File(result.path);
+      });
+    } catch (e) {}
+  }
+
   Container buildAvatar() {
     return Container(
       margin: EdgeInsets.only(top: 16, bottom: 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          IconButton(icon: Icon(Icons.add_a_photo), onPressed: null),
+          IconButton(
+            icon: Icon(Icons.add_a_photo),
+            onPressed: () => chooseAvatar(ImageSource.camera),
+          ),
           Container(
             width: 180,
             height: 180,
-            child: Image.asset('images/avatar.png'),
+            child: file == null
+                ? Image.asset('Images/avater.png')
+                : Image.file(file),
           ),
-          IconButton(icon: Icon(Icons.add_photo_alternate), onPressed: null),
+          IconButton(
+            icon: Icon(Icons.add_photo_alternate),
+            onPressed: () => chooseAvatar(ImageSource.gallery),
+          ),
         ],
       ),
     );
