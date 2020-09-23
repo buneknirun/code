@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:bunpwa/utility/normal_dialog.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -21,7 +23,7 @@ class _RegisterState extends State<Register> {
     'HR',
     'Logistic Manager',
   ];
-  String choosePosition;
+  String choosePosition, name, user, password;
   double lat, lng;
   File file;
 
@@ -55,6 +57,12 @@ class _RegisterState extends State<Register> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          IconButton(
+            icon: Icon(Icons.cloud_upload),
+            onPressed: () => uploadImage(),
+          )
+        ],
         backgroundColor: Colors.pink.shade200,
         title: Text('Register'),
       ),
@@ -140,6 +148,7 @@ class _RegisterState extends State<Register> {
     return Container(
       width: 250,
       child: TextField(
+        onChanged: (value) => name = value.trim(),
         decoration: InputDecoration(
           hintText: 'Display Name',
           prefixIcon: Icon(
@@ -161,6 +170,7 @@ class _RegisterState extends State<Register> {
     return Container(
       width: 250,
       child: TextField(
+        onChanged: (value) => user = value.trim(),
         decoration: InputDecoration(
           hintText: 'Username',
           prefixIcon: Icon(
@@ -182,6 +192,7 @@ class _RegisterState extends State<Register> {
     return Container(
       width: 250,
       child: TextField(
+        onChanged: (value) => password = value.trim(),
         decoration: InputDecoration(
           hintText: 'Password',
           prefixIcon: Icon(
@@ -227,7 +238,7 @@ class _RegisterState extends State<Register> {
             width: 180,
             height: 180,
             child: file == null
-                ? Image.asset('Images/avater.png')
+                ? Image.asset('images/avatar.png')
                 : Image.file(file),
           ),
           IconButton(
@@ -237,5 +248,29 @@ class _RegisterState extends State<Register> {
         ],
       ),
     );
+  }
+
+  Future<Null> uploadImage() async {
+    print('name = $name, user = $user, password = $password');
+    if (false) {
+      normalDialog(context, 'Please Choose Avatar');
+    } else if (name == null ||
+        name.isEmpty ||
+        user == null ||
+        user.isEmpty ||
+        password == null ||
+        password.isEmpty) {
+      normalDialog(context, 'Have Space, Please Fill Every Blank');
+    } else if (choosePosition == null) {
+      normalDialog(context, 'Please Choose Position');
+    } else {
+      uploadThread();
+    }
+  }
+
+  Future<Null> uploadThread() async {
+    await Firebase.initializeApp().then((value) {
+      print('Success Connected');
+    });
   }
 }
